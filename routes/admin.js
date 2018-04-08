@@ -149,7 +149,22 @@ var structureIt = (data) => {
             for (let column of columns) {
                 if (data[sheet][0][column] == 'Namn') {
                     student['name'] = data[sheet][row][column];
-                } else if (data[sheet][0][column] == 'Gruppaktivitets grupp') {
+                } else if (data[sheet][0][column] == 'Gruppaktivitets grupp dag 1') {
+                    student['group_name'] = data[sheet][row][column];
+                } else if (data[sheet][0][column] == 'Tillhör Kontor') {
+                    student['address_name'] = data[sheet][row][column];
+                } else if (data[sheet][0][column] == 'Ansvarig medarbetare') {
+                    student['teacher'] = data[sheet][row][column];
+                }
+            }
+            output.push(student);
+        }
+        for (let row = 1; row < data[sheet].length; row++) {
+            var student = {};
+            for (let column of columns) {
+                if (data[sheet][0][column] == 'Namn') {
+                    student['name'] = data[sheet][row][column];
+                } else if (data[sheet][0][column] == 'Gruppaktivitets grupp dag 2') {
                     student['group_name'] = data[sheet][row][column];
                 } else if (data[sheet][0][column] == 'Tillhör Kontor') {
                     student['address_name'] = data[sheet][row][column];
