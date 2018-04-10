@@ -54,7 +54,7 @@ router.post('/create/:role', (req, res, next) => {
 router.put('/update', (req, res, next) => {
     authenticate(req, res, next);
 }, (req, res, next) => {
-    if (password in req.body) {
+    if ('password' in req.body) {
         var ps = password.createPassword(req.body.password);
         req.body.password = ps.passwordHash;
         req.body.salt = ps.salt;
