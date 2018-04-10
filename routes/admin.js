@@ -5,12 +5,14 @@ const password = require('../configs/password');
 const multer = require('multer');
 const excelToJson = require('convert-excel-to-json');
 const mongo = require('mongodb');
+const sendMail = require('../configs/sendmail');
 
 var db, data;
 router.use((req, res, next) => {
     db = database.getInstance();
     next();
 })
+
 
 var authenticate = (req, res, next) => {
     try {
@@ -28,6 +30,30 @@ var authenticate = (req, res, next) => {
         return;
     }
 }
+
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, req.filename + '-' + `${(new Date()).getTime()}` + '.xlsx')
+    }
+})
+
+var upload = multer({ storage: storage });
+
+
+router.post('/sendmail',(req, res, next) => {
+    authenticate(req, res, next);
+},upload.single('avatar'),(req,res,next)=>{
+    var response = { devMessage : "Success", message: "Mail Sent Successfully" };
+    try{
+        sendMail(req.body.recipient,req.body.subject,req.body.message,req.file.path,response);
+    }catch(error){
+        res.json({devMessage : error, message : "Unsuccessful"});
+    }    
+    res.json(response);
+})
 
 router.post('/create/:role', (req, res, next) => {
     authenticate(req, res, next);
@@ -98,16 +124,6 @@ router.get('/getUsers/:role', (req, res, next) => {
     })
 })
 
-var storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads/')
-    },
-    filename: (req, file, cb) => {
-        cb(null, req.filename + '-' + `${(new Date()).getTime()}` + '.xlsx')
-    }
-})
-
-var upload = multer({ storage: storage });
 
 router.post('/uploadStudents', (req, res, next) => {
     authenticate(req, res, next);
