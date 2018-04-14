@@ -194,4 +194,28 @@ var structureIt = (data) => {
     return output;
 }
 
+router.post('/createMessage',(req,res)=>{
+    req.body._id = mongo.ObjectID();
+    db.collection('users').update({ 'username' : 'admin' },{ $push : { "messages" :  req.body }},(err, data)=>{
+        if(err) res.json({devMessage : err, message : "Creation Failed" })
+        else res.json({devMessage : "Success", message : "Success" })
+    })
+})
+
+router.post('/updateMessage',(req,res)=>{
+    req.body._id = mongo.ObjectID(req.body._id);
+    db.collection('users').update({ 'messages._id' : req.body._id },{ $set : { "messages.$.message" :  req.body.message }},(err, data)=>{
+        if(err) res.json({devMessage : err, message : "Creation Failed" })
+        else res.json({devMessage : "Success", message : "Success" })
+    })
+})
+
+router.delete('/deleteMessage/:id',(req,res)=>{
+    
+    db.collection('users').update({ 'messages._id' : mongo.ObjectID(req.params.id) },{ $pull : { "messages" : { "_id" : mongo.ObjectID(req.params.id) }} },(err, data)=>{
+        if(err) res.json({devMessage : err, message : "Creation Failed" })
+        else res.json({devMessage : "Success", message : "Success" })
+    })
+})
+
 module.exports = router;

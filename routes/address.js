@@ -124,4 +124,11 @@ router.get('/getGroups',(req,res,next)=>{
     })
 })
 
+router.get('/getMessages',(req,res)=>{
+    db.collection('users').find({ "username" : "admin"}).project({ _id : 0, messages : 1}).toArray((err,data)=>{
+        if(err) res.json({devMessage : err, message : "Creation Failed" })
+        else res.json({devMessage : "Success", message : "Success", data : data[0].messages })
+    })
+})
+
 module.exports = router;
