@@ -103,6 +103,35 @@ router.get('/attendance/:id/:date',(req,res,next)=>{
     })
 })
 
+router.post('/changePassword', (req, res) => {
+    database.collection('users').find({ username: req.body.username }).toArray((err, data) => {
+        if (err) {
+            console.log(err);
+            res.json({ devmessage: "Unsuccesful", message: "unsuccess" });
+        } else {
+            if (data.length > 0) {
+                var securePass = password.match(req.body.oldPassword, data[0].salt);
+                var newPass = password.match(req.body.newPassword, data[0].salt)
+                if (securePass.passwordHash == data[0].password) {
+                    database.collection('user_data').update({ username: req.params.username }, { $set: { password: newPass.passwordHash } }, (err, data) => {
+                        if (err) {
+                            console.log(err);
+                            res.json({ devmessage: "Unsuccesful", message: "unsuccess" })
+                        } else {
+                            res.json({ devmessage: "Succesful", message: "Success" })
+                        }
+                    })
+                } else {
+                    res.json({ devmessage: "Password Incorrect", message: "Invalid Credentials", error: true });
+                }
+            }
+            else {
+                res.json({ devmessage: "Username does not match", message: "Invalid Credentials", error: true })
+            }
+        }
+    })
+})
+
 router.get('/getGroups',(req,res,next)=>{
     authenticate(req,res,next);
 },(req,res,next)=>{
