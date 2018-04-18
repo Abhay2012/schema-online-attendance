@@ -139,7 +139,7 @@ router.get('/getGroups',(req,res,next)=>{
     try{
         if(req.body.token_data.username == 'admin') query = {};
         else if ('address' in req.body.token_data) query = { address_name : req.body.token_data.address};
-        else if ('teacher' in req.body.token_data) query = { teachers : req.body.token_data.teacher }; 
+        else if ('teacher' in req.body.token_data) query = { address_name : req.body.token_data.teacher }; 
     }catch(exception){
         res.json({ devmessage: exception, message: 'No Data Found', color: "red" })
     }
