@@ -162,7 +162,7 @@ router.post('/updateNote',(req,res,next)=>{
         
     }
     let query = { _id : req.body._id, "attendance.present" : false, "attendance.id" : req.body.id }; 
-    let update = { $set : { "attendance.note" : req.body.note } };
+    let update = { $set : { "attendance.$.note" : req.body.note } };
     db.collection('attendance').update(query, update, (err,data)=>{
         if(err){
             console.log(err);
