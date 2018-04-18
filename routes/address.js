@@ -153,6 +153,26 @@ router.get('/getGroups',(req,res,next)=>{
     })
 })
 
+router.post('/updateNote',(req,res,next)=>{
+    authenticate(req,res,next);
+},(req,res,next)=>{
+    try{
+        req.body._id = mongo.ObjectID(req.body._id);
+    }catch(exception){
+        
+    }
+    let query = { _id : req.body._id, "attendance.present" : false, "attendance.id" : req.body.id }; 
+    let update = { "attendance.note" : req.body.note }
+    db.collection('attendance').update(query, update, (err,data)=>{
+        if(err){
+            console.log(err);
+            res.status(400).json({ devmessage: 'Error from database', message: 'No Data Found', color: "red" })
+        }else{
+            res.status(200).json({ devmessage: 'Success', message: 'Update Successful', color: "green", data : req.body })
+        }
+    })
+})
+
 router.get('/getMessages',(req,res)=>{
     db.collection('users').find({ "username" : "admin"}).project({ _id : 0, messages : 1}).toArray((err,data)=>{
         if(err) res.json({devMessage : err, message : "Creation Failed" })
