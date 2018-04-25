@@ -138,7 +138,7 @@ router.post('/uploadStudents', (req, res, next) => {
         return {
             "updateOne": {
                 "filter": { "group_name": student.group_name, "address_name": student.address_name },
-                "update": { "$push": { students: { name: student.name, completed: false, _id: student.id } }, "$addToSet": { teachers: student.teacher } },
+                "update": { students: { "$addToSet" : { name: student.name, completed: false, _id: student.id } }, "$addToSet": { teachers: student.teacher } },
                 "upsert": true
             }
         };
