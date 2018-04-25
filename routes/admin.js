@@ -139,7 +139,7 @@ router.post('/uploadStudents', (req, res, next) => {
         return {
             "updateOne": {
                 "filter": { "group_name": student.group_name, "address_name": student.address_name },
-                "update": { "$push": { students: { name: student.name, completed: false, _id: mongo.ObjectID() } }, "$addToSet": { teachers: student.teacher } },
+                "update": { "$addToSet": { students: { name: student.name, completed: false, _id: student.id } }, "$addToSet": { teachers: student.teacher } },
                 "upsert": true
             }
         };
@@ -171,6 +171,8 @@ var structureIt = (data) => {
                     student['address_name'] = data[sheet][row][column];
                 } else if (data[sheet][0][column] == 'Ansvarig medarbetare') {
                     student['teacher'] = data[sheet][row][column];
+                }else if(data[sheet][0][column] == 'Personnummer'){
+                    student['id'] = data[sheet][row][column];
                 }
             }
             output.push(student);
