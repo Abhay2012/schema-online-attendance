@@ -132,20 +132,19 @@ router.post('/uploadStudents', (req, res, next) => {
     var result = excelToJson({
         sourceFile: `${req.file.path}`,
     });
-    console.log(result);
     result = structureIt(result);
 
     var bulkUpdateOps = result.map(function (student) {
         return {
             "updateOne": {
                 "filter": { "group_name": student.group_name, "address_name": student.address_name },
-                "update": { "$addToSet": { students: { name: student.name, completed: false, _id: student.id } }, "$addToSet": { teachers: student.teacher } },
+                "update": { "$push": { students: { name: student.name, completed: false, _id: student.id } }, "$addToSet": { teachers: student.teacher } },
                 "upsert": true
             }
         };
     });
 
-    db.collection('groups').bulkWrite(bulkUpdateOps, function (err, data) {
+    db.collection('groups').bulkWrite(bulkUpdateOps,{ ordered : false} ,function (err, data) {
         if (err) {
             console.log(err);
             res.json({ devmessage: 'Error from database', message: 'Sparning misslyckades', color: "red" })
