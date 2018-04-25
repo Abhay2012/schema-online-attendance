@@ -138,13 +138,13 @@ router.post('/uploadStudents', (req, res, next) => {
         return {
             "updateOne": {
                 "filter": { "group_name": student.group_name, "address_name": student.address_name },
-                "update": { students: { "$addToSet" : { name: student.name, completed: false, _id: student.id } }, "$addToSet": { teachers: student.teacher } },
+                "update": { "$addToSet": { students : { name: student.name, completed: false, _id: student.id } }, "$push": { teachers: student.teacher } },
                 "upsert": true
             }
         };
     });
 
-    db.collection('groups').bulkWrite(bulkUpdateOps,{ ordered : false} ,function (err, data) {
+    db.collection('groups').bulkWrite(bulkUpdateOps,function (err, data) {
         if (err) {
             console.log(err);
             res.json({ devmessage: 'Error from database', message: 'Sparning misslyckades', color: "red" })
@@ -187,6 +187,8 @@ var structureIt = (data) => {
                     student['address_name'] = data[sheet][row][column];
                 } else if (data[sheet][0][column] == 'Ansvarig medarbetare') {
                     student['teacher'] = data[sheet][row][column];
+                }else if(data[sheet][0][column] == 'Personnummer'){
+                    student['id'] = data[sheet][row][column];
                 }
             }
             output.push(student);
