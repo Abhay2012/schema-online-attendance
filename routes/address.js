@@ -189,4 +189,26 @@ router.delete('/deleteStudent/:gid/:id',(req,res,next)=>{
     })
 })
 
+router.delete('/deleteStudentFromAttendance/:gid/:id',(req,res,next)=>{
+    authenticate(req,res,next);
+},(req,res,next)=>{
+    db.collection('attendance').update({ _id : mongo.ObjectID(req.params.gid) }, { $pull : { students : { id : req.params.id } }},(err,data)=>{
+        if(err) res.json({devMessage : err, message : "Creation Failed" })
+        else res.json({devMessage : "Success", message : "Success", data : data })
+    })
+})
+
+router.put('/updateAttendanceStatus',(req,res,next)=>{
+    authenticate(req,res,next);
+},(req,res,next)=>{
+    db.collection('attendance').update({ _id : req.body._id, "students.id" : req.body.data.id }, { $set : { "students.$" : req.body.data }},(err,data)=>{
+        if(err) res.json({devMessage : err, message : "Creation Failed" })
+        else res.json({devMessage : "Success", message : "Success", data : data })
+    })
+})
+
+router.put('/updateAttendance',(req,res,next)=>{
+        
+})
+
 module.exports = router;
