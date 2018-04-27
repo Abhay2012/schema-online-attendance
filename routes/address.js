@@ -192,7 +192,7 @@ router.delete('/deleteStudent/:gid/:id',(req,res,next)=>{
 router.delete('/deleteStudentFromAttendance/:gid/:id',(req,res,next)=>{
     authenticate(req,res,next);
 },(req,res,next)=>{
-    db.collection('attendance').update({ _id : mongo.ObjectID(req.params.gid) }, { $pull : { students : { id : req.params.id } }},(err,data)=>{
+    db.collection('attendance').update({ _id : mongo.ObjectID(req.params.gid) }, { $pull : { "attendance"  : { id : req.params.id} } },(err,data)=>{
         if(err) res.json({devMessage : err, message : "Creation Failed" })
         else res.json({devMessage : "Success", message : "Success", data : data })
     })
