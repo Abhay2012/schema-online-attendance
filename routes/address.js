@@ -207,8 +207,4 @@ router.put('/updateAttendanceStatus',(req,res,next)=>{
     })
 })
 
-router.put('/updateAttendance',(req,res,next)=>{
-        
-})
-
 module.exports = router;
