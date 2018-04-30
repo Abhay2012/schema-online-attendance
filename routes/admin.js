@@ -124,6 +124,23 @@ router.get('/getUsers/:role', (req, res, next) => {
     })
 })
 
+router.delete('/deleteAttendance/:id',(req, res, next) => {
+    authenticate(req, res, next);
+}, (req, res, next) => {
+    let id;
+    try{
+        id = mongo.ObjectID(req.params.id)
+    }catch(error){
+        res.status(404).end({ devMessage: error, message: "Id cannot be empty" })
+    }
+    db.collection('attendance').remove({ _id : id },(err,result)=>{
+        if (err) res.status(404).json({ devMessage: "Error From Data Base", message: "Unsuccessful" });
+        else {
+            if (data.n <= 0) res.status(404).json({ devMessage: "Error From Data Base", message: "Unsuccessful" });
+            else res.status(200).json({ devMessage: "Success", message: "Successfully Deleted", data: data })
+        }
+    })
+})
 
 router.post('/uploadStudents', (req, res, next) => {
     authenticate(req, res, next);
